@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Accident 😭</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/rbush"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="./main.css">
+</head>
+
+    <header>
+        <h1>Car in a Clock</h1>
+        <h2>Spider chart comparing the number of accidents and injury severity</h2>
+    </header>
+<body>
+
+    
+    <div class="container" style="display: flex; flex-direction: row-reverse; margin-left: 20px;">
+        <div class="chart-container">
+            <svg id="car-clock-svg" width="100%" height="100%" viewBox="0 0 1000 700" preserveAspectRatio="xMidYMid meet"></svg>
+        </div>
+        <div class="text-container">
+            <div class="info-icon">
+                How to interact? <i class="fa-solid fa-circle-info fa-sm" style="color: #e3e3e3;"></i>
+                <div class="tooltip">
+                    • Hover over blue points to see accident counts and orange points for injury severity details. 
+                    <br><br>
+                    • Link data to real-world scenarios using the car-clock metaphor (e.g., '12 o'clock' = frontal impacts).
+                    <br><br>
+                    • Rotate the wheel to compare trends across vehicle types like SUVs or smaller cars.
+                    <br><br>
+                    • Click on the blue and orange button on the right to toggle the charts.
+                </div>
+            </div>
+            <p>The <span style="font-weight: bold;">Car-in-a-Clock</span> visualization maps accident data onto a clock face, representing impact directions. At its center is a spider chart that compares accident frequency (blue) and injury severity (orange). Beneath the chart, a car silhouette links data points to real-world scenarios—each clock position corresponds to a specific collision direction (e.g., '12 o'clock' for frontal impacts). A wheel on the right lets users explore how accident trends vary by vehicle type, such as SUVs or smaller cars. This tool highlights patterns in accident dynamics and injury severity influenced by collision direction and vehicle design.</p>
+        </div>
+    </div>
+    
+
+
+    <script src="./car_clock.js"></script>
+    <script>
+    function isInViewport(element) {
+        const rect = element.getBoundingClientRect();
+        return (
+            rect.top >= 0 &&
+            rect.left >= 0 &&
+            rect.bottom <= (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.right <= (window.innerWidth || document.documentElement.clientWidth)
+        );
+    }
+
+    function handleScroll() {
+        const textContainers = document.querySelectorAll('.text-container');
+        textContainers.forEach(container => {
+            if (isInViewport(container)) {
+                container.classList.add('visible'); // Add the class once when in viewport
+            }
+        });
+    }
+
+    function initializeTooltips() {
+        const infoIcons = document.querySelectorAll(".info-icon");
+
+        infoIcons.forEach(icon => {
+            const tooltip = document.createElement("div");
+            tooltip.classList.add("custom-tooltip");
+            tooltip.innerText = icon.getAttribute("title");
+            icon.setAttribute("title", "");
+            document.body.appendChild(tooltip);
+
+            icon.addEventListener("mouseover", (event) => {
+                tooltip.innerText = icon.dataset.tooltip || tooltip.innerText;
+                tooltip.style.display = "block";
+                tooltip.style.left = event.pageX + 10 + "px";
+                tooltip.style.top = event.pageY + 10 + "px";
+            });
+
+            icon.addEventListener("mouseout", () => {
+                tooltip.style.display = "none";
+            });
+
+            icon.addEventListener("mousemove", (event) => {
+                tooltip.style.left = event.pageX + 10 + "px";
+                tooltip.style.top = event.pageY + 10 + "px";
+            });
+        });
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    document.addEventListener('DOMContentLoaded', () => {
+        handleScroll(); 
+        initializeTooltips();
+    });
+    </script>
+    
+        
+</body>
+
+</html>
